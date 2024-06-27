@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 from scipy.stats import zscore
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+
 
 def remove_highly_correlated_features(df: pd.DataFrame, threshold: float = 0.9):
     corr_matrix = df.drop(columns=['price']).corr().abs()
@@ -34,6 +35,9 @@ def remove_unimportant_features(df, target, threshold=0.01):
 
 
 def features_evaluation(diamonds: pd.DataFrame, target_columns: str, variance_threshold: float = 0.01, correlation_threshold: float = 0.9, z_score_threshold: int = 3, random_forest_threshold: float = 0.01):
+
+
+    # Categorical Data Encoding
     diamonds_copy = diamonds.copy()
     label_encoders = {}
     categorical_columns = diamonds_copy.select_dtypes(include=['object']).columns
@@ -42,9 +46,14 @@ def features_evaluation(diamonds: pd.DataFrame, target_columns: str, variance_th
         diamonds_copy[col] = le.fit_transform(diamonds_copy[col])
         label_encoders[col] = le
 
+    
+    # Features Selection
     diamonds_copy = remove_outliers(diamonds_copy, z_score_threshold)
     diamonds_copy = remove_features_with_low_variance(diamonds_copy, variance_threshold)
     diamonds_copy = remove_highly_correlated_features(diamonds_copy, correlation_threshold)
+    
+    # Selected Features
     selected_features = diamonds_copy.columns
     diamonds = diamonds[selected_features]
+
     return diamonds
