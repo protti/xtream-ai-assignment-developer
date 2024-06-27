@@ -55,15 +55,7 @@ def save_results(results, model):
         print(f"Creating directory: {model_dir}")
         os.makedirs(model_dir)
     
-    filename = f"{type(model).__name__}_{int(time.time())}.pkl"
-    
-    full_path = os.path.join(model_dir, filename)
-    print(f"Saving model to: {full_path}")
-
-    # Save the model in a pickle file    
-    with open(full_path, 'wb') as file:
-        pickle.dump(model, file)
-
+    name_path = model.save_model(model_dir)
       
     # Path of the CSV file
     csv_file_path = os.path.join(results_dir, 'model_results.csv')
@@ -76,5 +68,5 @@ def save_results(results, model):
         writer = csv.writer(file)
         if not file_exists:
             writer.writerow(['Model', 'MAE', 'R2'])
-        writer.writerow([filename, results["MAE"], results["R2"]])
+        writer.writerow([name_path, results["MAE"], results["R2"]])
 
