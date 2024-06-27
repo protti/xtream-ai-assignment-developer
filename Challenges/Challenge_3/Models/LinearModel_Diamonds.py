@@ -5,8 +5,9 @@ from sklearn.metrics import r2_score, mean_absolute_error
 import pickle
 import time
 import os
+from .BaseModel_Diamonds import BaseModel
 
-class LinearModelDiamonds():
+class LinearModelDiamonds(BaseModel):
     """
     This class implements a linear model for predicting diamond prices.
 
@@ -22,6 +23,7 @@ class LinearModelDiamonds():
         """
         self.model = model
         self.features_adopted = []
+        self.training_data = []
 
     def preprocessing(self, diamonds_processed: pd.DataFrame) -> pd.DataFrame:
         """
@@ -50,6 +52,7 @@ class LinearModelDiamonds():
         """
         self.model.fit(x_train, y_train)
         self.features_adopted = x_train.columns
+        self.training_data = x_train
         return self
 
     
@@ -68,6 +71,7 @@ class LinearModelDiamonds():
         self.model.fit(x_train, y_train)
         y_pred = self.model.predict(x_test)
         self.features_adopted = x_train.columns
+        self.training_data = x_train
         return y_pred
 
     
@@ -110,6 +114,7 @@ class LinearModelDiamonds():
         Returns:
         str: The filename of the saved model.
         """
+        time.sleep(1)
         filename = f"{self.get_type_model()}_{int(time.time())}.pkl"
 
         full_path = os.path.join(path, filename)

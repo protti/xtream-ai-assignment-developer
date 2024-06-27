@@ -22,6 +22,7 @@ class LinearModelDiamonds(BaseModel):
         model (sklearn.linear_model): The linear model to be used for predictions.
         """
         self.model = model
+        self.features_adopted = []
 
     def preprocessing(self, diamonds_processed: pd.DataFrame) -> pd.DataFrame:
         """
@@ -49,6 +50,7 @@ class LinearModelDiamonds(BaseModel):
         LinearModelDiamonds: The fitted model.
         """
         self.model.fit(x_train, y_train)
+        self.features_adopted = x_train.columns
         return self
 
     
@@ -65,6 +67,7 @@ class LinearModelDiamonds(BaseModel):
         np.ndarray: The predicted values for the test data.
         """
         self.model.fit(x_train, y_train)
+        self.features_adopted = x_train.columns
         y_pred = self.model.predict(x_test)
         return y_pred
 
@@ -116,7 +119,7 @@ class LinearModelDiamonds(BaseModel):
 
         # Save the model in a pickle file    
         with open(full_path, 'wb') as file:
-            pickle.dump(self.model, file)
+            pickle.dump(self, file)
 
         return filename
     
@@ -127,4 +130,4 @@ class LinearModelDiamonds(BaseModel):
         Returns:
         str: The type of the linear model.
         """
-        return type(self.model).__name__
+        return f"LinearModel_Diamonds_{type(self.model).__name__}"

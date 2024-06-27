@@ -16,6 +16,7 @@ class XGBoostDiamonds(BaseModel):
         self.model = None
         self.optimized_params = optimized_params
         self.features_adopted = []
+        self.training_data = []
         
     def preprocessing(self, diamonds: pd.DataFrame) -> pd.DataFrame:
         """
@@ -47,6 +48,7 @@ class XGBoostDiamonds(BaseModel):
         XGBRegressor: The fitted XGBoost model.
         """
         self.features_adopted = x_train.columns
+        self.training_data = x_train
         if self.optimized_params:
             assert x_test is not None and y_test is not None, "x_test and y_test must be provided if optimized_params is True"
             self.model = XGBRegressor(**self.optimize_hyperparameters(x_train, y_train, x_test, y_test, n_trials), enable_categorical=enable_categorical, random_state=random_state)
@@ -70,6 +72,7 @@ class XGBoostDiamonds(BaseModel):
         np.ndarray: The predicted values for the test data.
         """
         self.features_adopted = x_train.columns
+        self.training_data = x_train
         if self.optimized_params:
             assert x_test is not None and y_test is not None, "x_test and y_test must be provided if optimized_params is True"
             self.fit(x_train, y_train, x_test, y_test, n_trials)
