@@ -25,37 +25,6 @@ class Predict(Resource):
             logging.error(f"An error occurred while loading the model: {e}")
             self.model = None
 
-    def adapt_data_to_model(self, data, model):
-        """
-        Adapt the input data to match the model's expected format.
-        
-        :param data: Input data as a pandas DataFrame
-        :param model: The machine learning model
-        :return: Adapted data as a pandas DataFrame
-        """
-        
-        if "linearmodel" in model.__class__.__name__.lower():
-            # Convert categorical variables to dummy/indicator variables
-            data = pd.get_dummies(data, columns=['cut', 'color', 'clarity'], drop_first=False)
-            expected_columns = [
-                'cut_Good', 'cut_Ideal', 'cut_Premium', 'cut_Very Good', 
-                'color_E', 'color_F', 'color_G', 'color_H', 'color_I', 'color_J', 
-                'clarity_IF', 'clarity_SI1', 'clarity_SI2', 'clarity_VS1', 'clarity_VS2', 
-                'clarity_VVS1', 'clarity_VVS2'
-            ]
-            # Ensure all expected columns are present in the data
-            for col in expected_columns:
-                if col not in data.columns:
-                    data[col] = False
-            # Convert categorical columns to numerical codes
-            for col in expected_columns:
-                data[col] = data[col].astype('category').cat.codes
-        elif "xgboost" in model.__class__.__name__.lower():
-            # Convert categorical variables to numerical codes
-            for col in ['cut', 'color', 'clarity']:
-                data[col] = data[col].astype('category').cat.codes
-        return data
-
     def post(self):
         """
         Handle POST requests to predict the price based on the provided data.
@@ -78,11 +47,7 @@ class Predict(Resource):
         # Load the model from the specified path
         self.load_model(data.get("path"))
         data_df = pd.DataFrame([data]).drop(columns=["path"])
-        # Adapt the data to match the model's expected format
-        data_original = self.adapt_data_to_model(data_df, self.model)
-        data_keep = data_original[self.model.features_adopted]
-        # Predict the price using the model
-        predicted_value = float(self.model.predict(data_keep)[0])
+        predicted_value = float(self.model.predict(data_df)[0])
         response = {"price": predicted_value}
         
         

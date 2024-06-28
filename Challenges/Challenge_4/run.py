@@ -104,7 +104,10 @@ def main(config_path):
     print("-------------------------------")
     print(f"MAE {config['model_to_use']}: ", results["MAE"])
     print(f"R2 {config['model_to_use']}: ", results["R2"])
-
+    print("-------------------------------")
+    diamonds = load_and_preprocess_data(config).drop(columns='price')
+    y_pred = model.predict(diamonds.iloc[0:1])
+    print("y_pred: ", y_pred) 
     ut.save_results(results, model, config)
 
 if __name__ == "__main__":

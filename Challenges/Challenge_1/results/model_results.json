@@ -3,7 +3,7 @@
         "model": "Lasso",
         "path": "../../data/diamonds.csv",
         "test_size": 0.2,
-        "name": "LinearModel_Diamonds_Lasso_1719606917.pkl",
+        "name": "LinearModel_Diamonds_Lasso_1719612888.pkl",
         "MAE": 750.4417062951572,
         "R2": 0.9091178731666789
     }

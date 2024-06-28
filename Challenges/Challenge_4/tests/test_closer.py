@@ -35,7 +35,7 @@ class TestCloserDiamondAPI(unittest.TestCase):
             "x": 3.95,
             "y": 3.98,
             "z": 2.43,
-            "path": "results/models/LinearModel_Diamonds_LinearRegression_1719607467.pkl",
+            "path": "results/models/LinearModel_Diamonds_LinearRegression_1719614053.pkl",
             "n_neighbors": 5
         }
         response = self.app.post('/closer-diamond/', json=data)

@@ -40,9 +40,12 @@ def run_model(config):
         "R2": r2_score(y_test, pred),
     }
 
+    diamonds = ut.load_preprocess_dataset(path)
+    pred = LinearModel.predict(diamonds.iloc[0:1])
+    print("pred: ", pred)
     print("MAE: ", results["MAE"])
     print("R2: ", results["R2"])
-    ut.save_results(results, LinearModel, config)
+    # ut.save_results(results, LinearModel, config)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run a linear model on the diamonds dataset.")

@@ -36,16 +36,16 @@ class Closer(Resource):
 
         # Filter the training data based on the sample's attributes
         filtered_data = self.model.training_data[
-            (self.model.training_data['cut'] == sample['cut'].values[0]) &
-            (self.model.training_data['color'] == sample['color'].values[0]) &
-            (self.model.training_data['clarity'] == sample['clarity'].values[0])
+            self.model.training_data.filter(like='cut').eq(sample.filter(like='cut').values[0]).all(axis=1) &
+            self.model.training_data.filter(like='color').eq(sample.filter(like='color').values[0]).all(axis=1) &
+            self.model.training_data.filter(like='clarity').eq(sample.filter(like='clarity').values[0]).all(axis=1)
         ]
-        
         # Calculate the absolute difference in carat and find the closest samples
         filtered_data['carat_diff'] = (filtered_data['carat'] - sample['carat'].values[0]).abs()
         closest_sample = filtered_data.nsmallest(n, 'carat_diff').drop(columns=['carat_diff'])
         
         return closest_sample
+        
 
     def post(self):
         """
@@ -70,6 +70,7 @@ class Closer(Resource):
         # Load the model from the specified path
         self.load_model(data.get("path"))
         data_df = pd.DataFrame([data])
+        data_df = self.model.preprocessing(data_df)
         # Get similar samples from the model's training data
         similar_samples = self.get_similar_samples(data_df, data.get("n_neighbors"))
         response = {"closer": similar_samples.to_dict(orient='records')}

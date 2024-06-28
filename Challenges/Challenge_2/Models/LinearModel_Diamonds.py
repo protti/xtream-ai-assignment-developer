@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sklearn as sk
 from sklearn.metrics import r2_score, mean_absolute_error
+from sklearn.preprocessing import OneHotEncoder
 import pickle
 import time
 import os
@@ -13,6 +14,7 @@ class LinearModelDiamonds(BaseModel):
 
     Attributes:
     model (sklearn.linear_model): The linear model to be used for predictions.
+    encoder (OneHotEncoder): The encoder to transform categorical features.
     """
     def __init__(self, model: sk.linear_model):
         """
@@ -22,7 +24,9 @@ class LinearModelDiamonds(BaseModel):
         model (sklearn.linear_model): The linear model to be used for predictions.
         """
         self.model = model
-        self.features_adopted = []
+        self.encoder = OneHotEncoder(drop='first', sparse=False)
+        self.features_adopted = None
+        self.training_data = []
 
     def preprocessing(self, diamonds_processed: pd.DataFrame) -> pd.DataFrame:
         """
@@ -30,11 +34,24 @@ class LinearModelDiamonds(BaseModel):
 
         Parameters:
         diamonds_processed (pd.DataFrame): The input DataFrame containing diamond data.
+        
 
         Returns:
         pd.DataFrame: The processed DataFrame with categorical columns converted to dummy variables.
         """
-        diamonds_processed = pd.get_dummies(diamonds_processed, columns=['cut', 'color', 'clarity'], drop_first=True)
+        categorical_columns = ['cut', 'color', 'clarity']
+        if self.features_adopted is None:
+            self.encoder.fit(diamonds_processed[categorical_columns])
+        
+        transformed_data = self.encoder.transform(diamonds_processed[categorical_columns])
+        transformed_df = pd.DataFrame(transformed_data, columns=self.encoder.get_feature_names_out(categorical_columns))
+
+        diamonds_processed = diamonds_processed.drop(columns=categorical_columns).reset_index(drop=True)
+        diamonds_processed = pd.concat([diamonds_processed, transformed_df], axis=1)
+
+        if self.features_adopted is not None:
+            diamonds_processed = diamonds_processed[self.features_adopted]
+        
         return diamonds_processed
 
 
@@ -83,6 +100,7 @@ class LinearModelDiamonds(BaseModel):
         Returns:
         np.ndarray: The predicted values for the test data.
         """
+        x_test = self.preprocessing(x_test)
         y_pred = self.model.predict(x_test)
         return y_pred
 

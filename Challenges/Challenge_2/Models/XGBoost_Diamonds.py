@@ -93,7 +93,8 @@ class XGBoostDiamonds(BaseModel):
         Returns:
         np.ndarray: The predicted values for the test data.
         """
-        return self.model.predict(x_test)
+        x_test = self.preprocessing(x_test)
+        return self.model.predict(x_test[self.features_adopted])
 
     def score(self, y_test: pd.Series, y_pred: np.ndarray) -> tuple:
         """

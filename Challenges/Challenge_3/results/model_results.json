@@ -5,7 +5,7 @@
         "linear_model_type": "LinearRegression",
         "test_size": 0.2,
         "random_state": 42,
-        "name": "LinearModel_Diamonds_LinearRegression_1719607399.pkl",
+        "name": "LinearModel_Diamonds_LinearRegression_1719611301.pkl",
         "MAE": 827.8844558558899,
         "R2": 0.9042566808441531
     },
@@ -15,8 +15,49 @@
         "use_optimized": false,
         "test_size": 0.2,
         "random_state": 42,
-        "name": "XGBoost_Diamonds_XGBRegressor_1719607409.pkl",
+        "name": "XGBoost_Diamonds_XGBRegressor_1719613675.pkl",
         "MAE": 346.6494683397557,
         "R2": 0.9627054547126169
+    },
+    {
+        "data_path": "../../data/diamonds.csv",
+        "model_to_use": "XGBModel",
+        "use_optimized": false,
+        "test_size": 0.2,
+        "random_state": 42,
+        "name": "XGBoost_Diamonds_XGBRegressor_1719613736.pkl",
+        "MAE": 346.6494683397557,
+        "R2": 0.9627054547126169
+    },
+    {
+        "data_path": "../../data/diamonds.csv",
+        "model_to_use": "XGBModel",
+        "use_optimized": false,
+        "test_size": 0.2,
+        "random_state": 42,
+        "name": "XGBoost_Diamonds_XGBRegressor_1719613946.pkl",
+        "MAE": 346.6494683397557,
+        "R2": 0.9627054547126169
+    },
+    {
+        "data_path": "../../data/diamonds.csv",
+        "model_to_use": "LinearModel",
+        "linear_model_type": "LinearRegression",
+        "test_size": 0.2,
+        "random_state": 42,
+        "name": "LinearModel_Diamonds_LinearRegression_1719613951.pkl",
+        "MAE": 827.8844558558899,
+        "R2": 0.9042566808441531
+    },
+    {
+        "data_path": "../../data/diamonds.csv",
+        "model_to_use": "XGBModel",
+        "use_optimized": true,
+        "n_trials": 10,
+        "test_size": 0.2,
+        "random_state": 42,
+        "name": "XGBoost_Diamonds_XGBRegressor_optimized_1719614893.pkl",
+        "MAE": 358.31126615566336,
+        "R2": 0.9630490959081465
     }
 ]
