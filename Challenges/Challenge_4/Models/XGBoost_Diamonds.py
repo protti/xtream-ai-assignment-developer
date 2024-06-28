@@ -12,11 +12,14 @@ import time
 This class implements the XGBoost method for predicting diamond prices.
 """
 class XGBoostDiamonds(BaseModel):
-    def __init__(self, optimized_params: bool = False):
+    def __init__(self, optimized_params: bool = False, n_trials: int = 20, random_state: int = 42, enable_categorical: bool = True):
         self.model = None
         self.optimized_params = optimized_params
         self.features_adopted = []
         self.training_data = []
+        self.n_trials = n_trials
+        self.random_state = random_state
+        self.enable_categorical = enable_categorical
         
     def preprocessing(self, diamonds: pd.DataFrame) -> pd.DataFrame:
         """
@@ -34,7 +37,7 @@ class XGBoostDiamonds(BaseModel):
         diamonds_processed_xgb['clarity'] = pd.Categorical(diamonds_processed_xgb['clarity'], categories=['IF', 'VVS1', 'VVS2', 'VS1', 'VS2', 'SI1', 'SI2', 'I1'], ordered=True)
         return diamonds_processed_xgb
     
-    def fit(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame=None, y_test: pd.Series=None, n_trials: int = 20, enable_categorical: bool = True, random_state: int = 42) -> XGBRegressor:
+    def fit(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame=None, y_test: pd.Series=None) -> XGBRegressor:
         """
         Fits the XGBoost model to the training data.
 
@@ -51,15 +54,15 @@ class XGBoostDiamonds(BaseModel):
         self.training_data = x_train
         if self.optimized_params:
             assert x_test is not None and y_test is not None, "x_test and y_test must be provided if optimized_params is True"
-            self.model = XGBRegressor(**self.optimize_hyperparameters(x_train, y_train, x_test, y_test, n_trials), enable_categorical=enable_categorical, random_state=random_state)
+            self.model = XGBRegressor(**self.optimize_hyperparameters(x_train, y_train, x_test, y_test, self.n_trials), enable_categorical=self.enable_categorical, random_state=self.random_state)
         else:
-            self.model = XGBRegressor(enable_categorical=enable_categorical, random_state=random_state)
+            self.model = XGBRegressor(enable_categorical=self.enable_categorical, random_state=self.random_state)
         
         self.model.fit(x_train, y_train)
         self.best_params = self.model.get_xgb_params()
         return self.model
 
-    def fit_predict(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame, y_test: pd.Series=None, n_trials:int = 20) -> np.ndarray:
+    def fit_predict(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame, y_test: pd.Series=None) -> np.ndarray:
         """
         Fits the model to the training data and makes predictions on the test data.
 
@@ -75,7 +78,7 @@ class XGBoostDiamonds(BaseModel):
         self.training_data = x_train
         if self.optimized_params:
             assert x_test is not None and y_test is not None, "x_test and y_test must be provided if optimized_params is True"
-            self.fit(x_train, y_train, x_test, y_test, n_trials)
+            self.fit(x_train, y_train, x_test, y_test)
         else:
             self.fit(x_train, y_train)
         y_pred = self.model.predict(x_test)

@@ -39,7 +39,7 @@ class LinearModelDiamonds(BaseModel):
         return diamonds_processed
 
 
-    def fit(self, x_train: pd.DataFrame, y_train: pd.Series, **kwargs) -> sk.linear_model:
+    def fit(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame=None, y_test: pd.Series=None) -> sk.linear_model:
         """
         Fits the linear model to the training data.
 
@@ -56,7 +56,7 @@ class LinearModelDiamonds(BaseModel):
         return self
 
     
-    def fit_predict(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame) -> np.ndarray:
+    def fit_predict(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame, y_test: pd.Series=None) -> np.ndarray:
         """
         Fits the model to the training data and makes predictions on the test data.
 

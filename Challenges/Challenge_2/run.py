@@ -10,15 +10,42 @@ import json
 import argparse
 
 def load_config(config_path):
+    """
+    Load the configuration from a JSON file.
+
+    Parameters:
+    config_path (str): Path to the JSON configuration file.
+
+    Returns:
+    dict: Configuration parameters.
+    """
     with open(config_path, 'r') as f:
         return json.load(f)
 
 def load_and_preprocess_data(config):
+    """
+    Load and preprocess the diamonds dataset.
+
+    Parameters:
+    config (dict): Configuration dictionary containing the data path.
+
+    Returns:
+    DataFrame: Preprocessed diamonds dataset.
+    """
     path = config["data_path"]
     diamonds = ut.load_preprocess_dataset(path)
     return fa.features_evaluation(diamonds)
 
 def get_model(config):
+    """
+    Get the model specified in the configuration.
+
+    Parameters:
+    config (dict): Configuration dictionary specifying the model to use and its parameters.
+
+    Returns:
+    object: An instance of the specified model.
+    """
     model_to_use = config["model_to_use"]
     if model_to_use == "LinearModel":
         linear_model_type = config["linear_model_type"]
@@ -34,6 +61,19 @@ def get_model(config):
         raise ValueError(f"Unknown model: {model_to_use}")
 
 def evaluate_model(model, x_train, y_train, x_test, y_test):
+    """
+    Evaluate the model on the test data.
+
+    Parameters:
+    model (object): The model to be trained and evaluated.
+    x_train (DataFrame): Training features.
+    y_train (Series): Training target values.
+    x_test (DataFrame): Testing features.
+    y_test (Series): Testing target values.
+
+    Returns:
+    dict: Dictionary containing the Mean Absolute Error (MAE) and R-squared (R2) score of the model.
+    """
     y_pred = model.fit_predict(x_train, y_train, x_test, y_test)
     return {
         "MAE": mean_absolute_error(y_test, y_pred),
@@ -41,6 +81,12 @@ def evaluate_model(model, x_train, y_train, x_test, y_test):
     }
 
 def main(config_path):
+    """
+    Main function to orchestrate the loading of configuration, preprocessing of data, model training, evaluation, and saving of results.
+
+    Parameters:
+    config_path (str): Path to the JSON configuration file.
+    """
     config = load_config(config_path)
     diamonds = load_and_preprocess_data(config)
     model = get_model(config)

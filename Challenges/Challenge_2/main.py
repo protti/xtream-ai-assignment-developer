@@ -13,11 +13,6 @@ if __name__ == "__main__":
     # Load the dataset
     path = "data/diamonds.csv"
     diamonds = ut.load_preprocess_dataset(path)
-    
-    '''# Normalization of the data
-    numeric_columns = diamonds.select_dtypes(include=[np.number]).columns
-    scaler = StandardScaler()
-    diamonds[numeric_columns] = scaler.fit_transform(diamonds[numeric_columns])'''
 
 
     # Evaluation of the features
@@ -46,8 +41,7 @@ if __name__ == "__main__":
                                                                             random_state=42)
     
     
-    # I left the user choose if we want to create the model with optimized hyperparameters or not.
-
+    
     y_pred_optimized = XGBModelOptimized.fit_predict(x_train_xbg, y_train_xbg, x_test_xbg, y_test_xbg)
     y_pred = XGBModel.fit_predict(x_train_xbg, y_train_xbg, x_test_xbg, y_test_xbg)
     y_pred_linear = LinearModel.fit_predict(x_train_linear, y_train_linear, x_test_linear, y_test_linear)
@@ -67,6 +61,7 @@ if __name__ == "__main__":
         "MAE": mean_absolute_error(y_test_xbg, y_pred_optimized),
         "R2": r2_score(y_test_xbg, y_pred_optimized),
     }
+    
     print("-------------------------------")
     print("MAE XGBoost: ", results["MAE"])
     print("R2 XGBoost: ", results["R2"])
