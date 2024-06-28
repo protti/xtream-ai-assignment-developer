@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify, render_template
-from flask_restful import Resource, Api
-import pickle, logging, pandas as pd
+from flask import Flask, render_template
+from flask_restful import Api
+import logging
 from sklearn import linear_model
 from xgboost import XGBRegressor
 from flask_cors import CORS

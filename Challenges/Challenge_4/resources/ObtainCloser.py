@@ -5,9 +5,15 @@ from .Observability import db, Observability
 
 class Closer(Resource):
     def __init__(self):
+        # Initialize the Closer resource with a model attribute set to None
         self.model = None
 
     def load_model(self, model_path):
+        """
+        Load a machine learning model from a specified file path.
+        
+        :param model_path: Path to the model file
+        """
         try:
             with open(model_path, 'rb') as f:
                 self.model = pickle.load(f)
@@ -20,36 +26,56 @@ class Closer(Resource):
             self.model = None
 
     def get_similar_samples(self, sample: pd.Series, n: int) -> pd.DataFrame:
+        """
+        Get the n most similar samples from the model's training data based on the provided sample.
+        
+        :param sample: A pandas Series representing the sample to compare
+        :param n: Number of similar samples to retrieve
+        :return: A DataFrame containing the n most similar samples
+        """
         logging.debug(f"Model: {self.model.training_data}")
+        # Filter the training data based on the sample's attributes
         filtered_data = self.model.training_data[
             (self.model.training_data['cut'] == sample['cut'].values[0]) &
             (self.model.training_data['color'] == sample['color'].values[0]) &
             (self.model.training_data['clarity'] == sample['clarity'].values[0])
         ]
         logging.debug(f"Filtered Data: {filtered_data}")
+        # Calculate the absolute difference in carat and find the closest samples
         filtered_data['carat_diff'] = (filtered_data['carat'] - sample['carat'].values[0]).abs()
         closest_sample = filtered_data.nsmallest(n, 'carat_diff').drop(columns=['carat_diff'])
         logging.debug(f"Closest Sample: {closest_sample}")
         return closest_sample
 
     def post(self):
+        """
+        Handle POST requests to find the closest samples based on the provided data.
+        
+        :return: A JSON response containing the closest samples or an error message
+        """
         data = request.get_json()
         required_fields = ["carat", "cut", "color", "clarity", "depth", "table", "x", "y", "z", "path", "n_neighbors"]
+        # Check for missing fields in the request data
         missing_fields = [field for field in required_fields if data.get(field) is None]
         if missing_fields:
             response = {'message': f'Missing fields: {", ".join(missing_fields)}'}
+            # Log the missing fields in the Observability table
             db.session.add(Observability(type='CloserDiamond', operation='POST', request=str(data), response=str(response)))
             db.session.commit()
             return response, 400
 
+        # Convert data types as necessary
         data = {k: (float(v) if k in ["carat", "depth", "table", "x", "y", "z"] else str(v)) for k, v in data.items()}
         data['n_neighbors'] = int(data['n_neighbors'])
+        # Load the model from the specified path
         self.load_model(data.get("path"))
         data_df = pd.DataFrame([data])
+        # Get similar samples from the model's training data
         similar_samples = self.get_similar_samples(data_df, data.get("n_neighbors"))
         response = {"closer": similar_samples.to_dict(orient='records')}
         logging.debug(f"Similar Samples: {similar_samples}")
         
+        # Log the request and response in the Observability table
         db.session.add(Observability(type='CloserDiamond', operation='POST', request=str(data), response=str(response)))
         db.session.commit()
         

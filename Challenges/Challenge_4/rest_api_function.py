@@ -1,10 +1,9 @@
-from flask import Flask, request, jsonify, render_template
-from flask_restful import Resource, Api
-import pickle, logging, pandas as pd
+from flask import Flask, render_template
+from flask_restful import Api
+import logging
 from sklearn import linear_model
 from xgboost import XGBRegressor
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from resources.PredictPrice import Predict
 from resources.ObtainCloser import Closer
 from resources.Observability import db, Observability
@@ -23,8 +22,6 @@ def init_db():
 
 
 init_db()
-
-
 
 api.add_resource(Predict, '/predict-price/')
 api.add_resource(Closer, '/closer-diamond/')
