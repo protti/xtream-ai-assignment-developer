@@ -35,7 +35,7 @@ class TestCloserDiamondAPI(unittest.TestCase):
             "x": 3.95,
             "y": 3.98,
             "z": 2.43,
-            "path": "C:\\Users\\jeson\\PycharmProjects\\xtream-ai-assignment-developer\\Challenges\\Challenge_4\\results\\models\\XGBoost_Diamonds_XGBRegressor_optimized_1719517237.pkl",
+            "path": "results/models/XGBoost_Diamonds_XGBRegressor_optimized_1719517237.pkl",
             "n_neighbors": 5
         }
         response = self.app.post('/closer-diamond/', json=data)

@@ -1,12 +1,14 @@
 import unittest
 from rest_api_function import app
-
+import logging
+import os
 
 class TestCloserDiamondAPI(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
+        logging.debug("Current working directory: " + os.getcwd())
 
 
     def test_closer_missing_fields(self):
@@ -15,6 +17,7 @@ class TestCloserDiamondAPI(unittest.TestCase):
         self.assertIn('Missing fields', response.json['message'])
 
     def test_closer_success(self):
+        logging.debug(os.getcwd())
         data = {
             "carat": 0.23,
             "cut": "Ideal",
@@ -25,7 +28,7 @@ class TestCloserDiamondAPI(unittest.TestCase):
             "x": 3.95,
             "y": 3.98,
             "z": 2.43,
-            "path": "C:\\Users\\jeson\\PycharmProjects\\xtream-ai-assignment-developer\\Challenges\\Challenge_3\\results\\models\\XGBoost_Diamonds_XGBRegressor_optimized_1719517237.pkl",
+            "path": "results/models/XGBoost_Diamonds_XGBRegressor_optimized_1719517237.pkl",
             "n_neighbors": 5
         }
         response = self.app.post('/closer-diamond/', json=data)

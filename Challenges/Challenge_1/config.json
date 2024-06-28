@@ -1,0 +1,5 @@
+{
+    "model": "LinearRegression",
+    "path": "../../data/diamonds.csv",
+    "test_size": 0.2
+}

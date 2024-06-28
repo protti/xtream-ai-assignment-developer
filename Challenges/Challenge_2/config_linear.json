@@ -1,0 +1,7 @@
+{
+    "data_path": "../../data/diamonds.csv",
+    "model_to_use": "LinearModel",
+    "linear_model_type": "LinearRegression",
+    "test_size": 0.2,
+    "random_state": 42
+}
