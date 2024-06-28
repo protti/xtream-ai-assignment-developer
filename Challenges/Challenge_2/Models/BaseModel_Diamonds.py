@@ -6,13 +6,16 @@ class BaseModel(ABC):
     def __init__(self):
         self.model = None
 
-
     @abstractmethod
-    def fit(self, x_train: pd.DataFrame, y_train: pd.Series, **kwargs) -> object:
+    def preprocessing(self, diamonds: pd.DataFrame) -> pd.DataFrame:
         pass
 
     @abstractmethod
-    def fit_predict(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame) -> np.ndarray:
+    def fit(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame=None, y_test: pd.Series=None) -> object:
+        pass
+
+    @abstractmethod
+    def fit_predict(self, x_train: pd.DataFrame, y_train: pd.Series, x_test: pd.DataFrame, y_test: pd.Series=None) -> np.ndarray:
         pass
 
     @abstractmethod

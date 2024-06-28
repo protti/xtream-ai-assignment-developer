@@ -9,40 +9,42 @@ from sklearn.linear_model import Lasso, LinearRegression
 import json
 import argparse
 
-def main(config_path):
-    # Load the configuration file
+def load_config(config_path):
     with open(config_path, 'r') as f:
-        config = json.load(f)
+        return json.load(f)
 
-    # Load the dataset
+def load_and_preprocess_data(config):
     path = config["data_path"]
     diamonds = ut.load_preprocess_dataset(path)
+    return fa.features_evaluation(diamonds)
 
-    # Feature evaluation
-    diamonds = fa.features_evaluation(diamonds)
-
+def get_model(config):
     model_to_use = config["model_to_use"]
-    
     if model_to_use == "LinearModel":
         linear_model_type = config["linear_model_type"]
         if linear_model_type == "Lasso":
-            model = LinearModelDiamonds(Lasso())
+            return LinearModelDiamonds(Lasso())
         elif linear_model_type == "LinearRegression":
-            model = LinearModelDiamonds(LinearRegression())
+            return LinearModelDiamonds(LinearRegression())
         else:
             raise ValueError(f"Unknown linear model type: {linear_model_type}")
-    
     elif model_to_use == "XGBModel":
-        model = xgb.XGBoostDiamonds(optimized_params=config["use_optimized"])
-        if config.get("use_optimized", False):
-            n_trials = config["n_trials"]
-        else:
-            n_trials = None
+        return xgb.XGBoostDiamonds(optimized_params=config["use_optimized"])
     else:
         raise ValueError(f"Unknown model: {model_to_use}")
 
+def evaluate_model(model, x_train, y_train, x_test, y_test):
+    y_pred = model.fit_predict(x_train, y_train, x_test, y_test)
+    return {
+        "MAE": mean_absolute_error(y_test, y_pred),
+        "R2": r2_score(y_test, y_pred),
+    }
 
-    # Data preprocessing
+def main(config_path):
+    config = load_config(config_path)
+    diamonds = load_and_preprocess_data(config)
+    model = get_model(config)
+
     diamonds_processed = model.preprocessing(diamonds)
     x_train, x_test, y_train, y_test = train_test_split(
         diamonds_processed.drop(columns='price'), 
@@ -51,23 +53,12 @@ def main(config_path):
         random_state=config["random_state"]
     )
 
-    if model_to_use == "XGBModel" and n_trials is not None:
-        
-        y_pred = model.fit_predict(x_train, y_train, x_test, y_test, n_trials=n_trials)
-    else:
-        y_pred = model.fit_predict(x_train, y_train, x_test)
-
-    # Model evaluation
-    results = {
-        "MAE": mean_absolute_error(y_test, y_pred),
-        "R2": r2_score(y_test, y_pred),
-    }
+    results = evaluate_model(model, x_train, y_train, x_test, y_test)
 
     print("-------------------------------")
-    print(f"MAE {model_to_use}: ", results["MAE"])
-    print(f"R2 {model_to_use}: ", results["R2"])
+    print(f"MAE {config['model_to_use']}: ", results["MAE"])
+    print(f"R2 {config['model_to_use']}: ", results["R2"])
 
-    # Save the results to a CSV file
     ut.save_results(results, model)
 
 if __name__ == "__main__":

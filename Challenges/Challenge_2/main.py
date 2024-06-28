@@ -47,9 +47,10 @@ if __name__ == "__main__":
     
     
     # I left the user choose if we want to create the model with optimized hyperparameters or not.
-    y_pred_optimized = XGBModelOptimized.fit_predict(x_train_xbg, y_train_xbg, x_test_xbg, y_test_xbg, n_trials=100)
-    y_pred = XGBModel.fit_predict(x_train_xbg, y_train_xbg, x_test_xbg)
-    y_pred_linear = LinearModel.fit_predict(x_train_linear, y_train_linear, x_test_linear)
+
+    y_pred_optimized = XGBModelOptimized.fit_predict(x_train_xbg, y_train_xbg, x_test_xbg, y_test_xbg)
+    y_pred = XGBModel.fit_predict(x_train_xbg, y_train_xbg, x_test_xbg, y_test_xbg)
+    y_pred_linear = LinearModel.fit_predict(x_train_linear, y_train_linear, x_test_linear, y_test_linear)
     
     # Evaluation of the model
     results = {
