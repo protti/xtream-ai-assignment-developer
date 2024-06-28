@@ -153,8 +153,8 @@
             const data = {};
             formData.forEach((value, key) => data[key] = value);
 
-            fetch('http://127.0.0.1:5000/predict_value/', {
-                    method: 'PUT',
+            fetch('http://127.0.0.1:5000/predict-price/', {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },

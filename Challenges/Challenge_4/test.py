@@ -2,7 +2,7 @@ import requests
 
 BASE = "http://127.0.0.1:5000/"
 
-response = requests.put(BASE + '/predict_value/', 
+response = requests.post(BASE + '/predict-price/', 
                         json={"carat": 1.0, "cut": "Ideal", 
                               "color": "G", "clarity": "VS1", 
                               "depth": 61.5, "table": 55.0, 
@@ -13,7 +13,7 @@ response = requests.put(BASE + '/predict_value/',
 # Send data as JSON
 print(response.json())
 
-response = requests.put(BASE + '/closer/', 
+response = requests.post(BASE + '/closer-diamond/', 
                         json={"carat": 1.0, "cut": "Ideal", 
                               "color": "G", "clarity": "VS1", 
                               "depth": 61.5, "table": 55.0, 

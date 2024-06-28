@@ -168,8 +168,8 @@
             const data = {};
             formData.forEach((value, key) => data[key] = value);
 
-            fetch('http://127.0.0.1:5000/closer/', {
-                    method: 'PUT',
+            fetch('http://127.0.0.1:5000/closer-diamond/', {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
