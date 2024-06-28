@@ -24,7 +24,7 @@ class TestPredictPriceAPI(unittest.TestCase):
             "x": 3.95,
             "y": 3.98,
             "z": 2.43,
-            "path": "results/models/XGBoost_Diamonds_XGBRegressor_optimized_1719517237.pkl"
+            "path": "results/models/XGBoost_Diamonds_XGBRegressor_1719607409.pkl"
         }
         response = self.app.post('/predict-price/', json=data)
         self.assertEqual(response.status_code, 200)

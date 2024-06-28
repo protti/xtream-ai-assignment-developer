@@ -42,7 +42,7 @@ def run_model(config):
 
     print("MAE: ", results["MAE"])
     print("R2: ", results["R2"])
-    ut.save_results(results, LinearModel)
+    ut.save_results(results, LinearModel, config)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run a linear model on the diamonds dataset.")

@@ -37,7 +37,7 @@ class LinearModelDiamonds():
         return diamonds_processed
 
 
-    def fit(self, x_train: pd.DataFrame, y_train: pd.Series, **kwargs) -> sk.linear_model:
+    def fit(self, x_train: pd.DataFrame, y_train: pd.Series) -> sk.linear_model:
         """
         Fits the linear model to the training data.
 

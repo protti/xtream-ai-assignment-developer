@@ -1,5 +1,5 @@
 {
-    "model": "LinearRegression",
+    "model": "Lasso",
     "path": "../../data/diamonds.csv",
     "test_size": 0.2
 }
