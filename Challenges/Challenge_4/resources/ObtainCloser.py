@@ -33,18 +33,18 @@ class Closer(Resource):
         :param n: Number of similar samples to retrieve
         :return: A DataFrame containing the n most similar samples
         """
-        logging.debug(f"Model: {self.model.training_data}")
+
         # Filter the training data based on the sample's attributes
         filtered_data = self.model.training_data[
             (self.model.training_data['cut'] == sample['cut'].values[0]) &
             (self.model.training_data['color'] == sample['color'].values[0]) &
             (self.model.training_data['clarity'] == sample['clarity'].values[0])
         ]
-        logging.debug(f"Filtered Data: {filtered_data}")
+        
         # Calculate the absolute difference in carat and find the closest samples
         filtered_data['carat_diff'] = (filtered_data['carat'] - sample['carat'].values[0]).abs()
         closest_sample = filtered_data.nsmallest(n, 'carat_diff').drop(columns=['carat_diff'])
-        logging.debug(f"Closest Sample: {closest_sample}")
+        
         return closest_sample
 
     def post(self):
@@ -73,7 +73,7 @@ class Closer(Resource):
         # Get similar samples from the model's training data
         similar_samples = self.get_similar_samples(data_df, data.get("n_neighbors"))
         response = {"closer": similar_samples.to_dict(orient='records')}
-        logging.debug(f"Similar Samples: {similar_samples}")
+        
         
         # Log the request and response in the Observability table
         db.session.add(Observability(type='CloserDiamond', operation='POST', request=str(data), response=str(response)))

@@ -33,7 +33,7 @@ class Predict(Resource):
         :param model: The machine learning model
         :return: Adapted data as a pandas DataFrame
         """
-        logging.debug(f"Model Name: {model.__class__.__name__.lower()}")
+        
         if "linearmodel" in model.__class__.__name__.lower():
             # Convert categorical variables to dummy/indicator variables
             data = pd.get_dummies(data, columns=['cut', 'color', 'clarity'], drop_first=False)
@@ -54,7 +54,6 @@ class Predict(Resource):
             # Convert categorical variables to numerical codes
             for col in ['cut', 'color', 'clarity']:
                 data[col] = data[col].astype('category').cat.codes
-            logging.debug(f"Data: {data}")
         return data
 
     def post(self):
@@ -85,7 +84,7 @@ class Predict(Resource):
         # Predict the price using the model
         predicted_value = float(self.model.predict(data_keep)[0])
         response = {"price": predicted_value}
-        logging.debug(f"Predict: {predicted_value}")
+        
         
         # Log the request and response in the Observability table
         db.session.add(Observability(type='PredictPrice', operation='POST', request=str(data), response=str(response)))
