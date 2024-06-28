@@ -7,29 +7,23 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from resources.PredictPrice import Predict
 from resources.ObtainCloser import Closer
-
+from resources.Observability import db, Observability
 logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-db = SQLAlchemy(app)
+db.init_app(app)
+
+def init_db():
+    with app.app_context():
+        if not db.engine.dialect.has_table(db.engine, 'observability'):
+            db.create_all()
 
 
-class Observability(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(100), nullable=False)
-    operation = db.Column(db.String(100), nullable=False)
-    request = db.Column(db.String(100), nullable=True)
-    response = db.Column(db.String(100), nullable=True)
-	
-    def __repr__(self):
-        return f"Observe(type = {type}, operation = {operation}, request = {request}, response = {response})"
+init_db()
 
-# Create all tables (this should be done before running the app)
-if not db.engine.dialect.has_table(db.engine, 'observability'):
-    db.create_all()
 
 
 api.add_resource(Predict, '/predict-price/')
