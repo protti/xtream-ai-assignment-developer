@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import request
 import pickle, logging, pandas as pd
 from .Observability import db, Observability
+from datetime import datetime
 
 class Closer(Resource):
     def __init__(self):
@@ -60,7 +61,7 @@ class Closer(Resource):
         if missing_fields:
             response = {'message': f'Missing fields: {", ".join(missing_fields)}'}
             # Log the missing fields in the Observability table
-            db.session.add(Observability(type='CloserDiamond', operation='POST', request=str(data), response=str(response)))
+            db.session.add(Observability(method='POST', timestamp=datetime.now(), model=data.get("path"), type_request='CloserDiamond', request=str(data), response=str(response)))
             db.session.commit()
             return response, 400
 
@@ -77,7 +78,7 @@ class Closer(Resource):
         
         
         # Log the request and response in the Observability table
-        db.session.add(Observability(type='CloserDiamond', operation='POST', request=str(data), response=str(response)))
+        db.session.add(Observability(method='POST', timestamp=datetime.now(), model=data.get("path"), type_request='CloserDiamond', request=str(data), response=str(response)))
         db.session.commit()
         
         return response

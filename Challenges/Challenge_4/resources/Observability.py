@@ -15,8 +15,10 @@ class Observability(db.Model):
         response (str): Response data associated with the operation.
     """
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(100), nullable=False)
-    operation = db.Column(db.String(100), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False)
+    method = db.Column(db.String(100), nullable=False)
+    model = db.Column(db.String(100), nullable=False)
+    type_request = db.Column(db.String(100), nullable=True)
     request = db.Column(db.String(100), nullable=True)
     response = db.Column(db.String(100), nullable=True)
     
@@ -26,4 +28,4 @@ class Observability(db.Model):
         
         :return: A string representation of the Observability object.
         """
-        return f"Observe(type = {type}, operation = {operation}, request = {request}, response = {response})"
+        return f"Observe(timestamp = {timestamp}, method = {method}, model = {model}, type_request = {type_request}, request = {request}, response = {response})"
