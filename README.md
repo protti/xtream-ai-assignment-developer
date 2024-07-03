@@ -68,7 +68,9 @@ Observability is key. Save every request and response made to the APIs to a **pr
 ---
 # Overview
 
-This repository contains a series of independent challenges, each with its own folder and README instructions. Each challenge addresses a specific aspect of the overall project, allowing you to understand the implementation of each component separately.
+This repository contains a series of independent challenges, each with its own folder and README instructions. Each challenge addresses a specific aspect of the overall project, allowing you to understand the implementation of each component separately. 
+
+You can find the solutions for each challenge in the folder [Challenges](Challenges).
 
 The final challenge combines all previous challenges into a cohesive project. This README provides comprehensive instructions to run the final challenge, but I strongly recommend to read the README of each challenge to understand the implementation of each component separately.
 
@@ -79,15 +81,24 @@ This challenge involves developing an automated pipeline that trains models base
 
 ## Instructions to Run the Final Challenge
 
-This challenge combines all previous challenges. Here, I'll provide the instructions to run the final challenge. Each challenge is independent, with its own README containing specific instructions and explanations for each solution adopted.
+This challenge combines all previous challenges. Here, I'll provide the instructions to run the final challenge. Each challenge is independent, with its own README containing specific instructions and explanations for each solution adopted. 
+
 
 ## How to Create a Model
 
-To generate a model, use the following command:
+To generate a model from the main folder, use the following command:
 
 ```bash
-python run.py config.json
+python Challenges/Challenge_4/run.py config_linear.json
 ```
+
+Otherwise, I suggest you to go to the folder `Challenges/Challenge_4` and run the command:
+
+```bash
+python run.py config_linear.json
+```
+
+I have provided two configuration files in the folder `Challenges/Challenge_4` to generate the models with different hyperparameters. However, you can create your own configuration file to generate anytype of model with the hyperparameters you want, by following the instructions in the README of the folders [Challenge2/README.md](Challenges/Challenge_2/README.md).
 
 ### Example Configuration Files
 
